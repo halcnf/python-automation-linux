@@ -2,9 +2,15 @@ import subprocess, time
 
 # --------------------------------------------------------------------- #
 # get_cpuload
-log_path_load_avg = '/home/centos/sysmonitor/logs/load_avg.log'
-log_path_script = '/home/centos/sysmonitor/logs/script.log'
-    
+localtime = time.gmtime()
+log_path_load_avg = '/home/centos/sa/logs/'
+log_file_load_avg = str(time.strftime('%m_%d_%y',localtime))
+log_path_load_avg += 'load_avg_' + log_file_load_avg + '.log'
+
+log_path_script = '/home/centos/sa/logs/script.log'
+
+log_time = str(time.strftime('%H:%M:%S %m %d %y',localtime)) 
+
 def get_cpuload():
     # cmd = "uptime | grep -ohe '[s:][ ].*' | awk '{ print \"1m: \"$2 \" 5m: \"$3 \" 15m: \" $4}'"
     cmd = 'uptime'
@@ -22,19 +28,19 @@ def get_cpuload():
         fifteen_m = fifteen_m.replace(' ', '')
 
         with open (log_path_load_avg,'a') as f:
-            f.write(time.ctime() + ' ' + one_m + ' ' + five_m + ' ' + fifteen_m + '\n')
+            f.write(log_time + ' ' + one_m + ' ' + five_m + ' ' + fifteen_m + '\n')
 
         return  current_users,  one_m, five_m, fifteen_m
 
     else:
         with open (log_path_load_avg,'a') as f:
-            f.write(time.ctime() + 'ERROR' + '\n')
+            f.write(log_time + 'ERROR' + '\n')
 
         return "ERROR"
 # --------------------------------------------------------------------- #
 if get_cpuload() != 'ERROR':
      with open (log_path_script,'a') as f:
-            f.write(time.ctime() + ' Success' + '\n')
+            f.write(log_time + ' Success' + '\n')
 else:
     with open (log_path_script,'a') as f:
-        f.write(time.ctime() + ' Error' + '\n')
+        f.write(log_time + ' Error' + '\n')
